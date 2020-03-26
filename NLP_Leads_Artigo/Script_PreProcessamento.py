@@ -8,10 +8,10 @@ Created on Wed Oct 16 23:05:38 2019
 import pandas as pd
 import nltk
 from funcoes_suporte import limpar
-from SQLServer import SQLServer
+from Database import SQLServer
 
 # conecta com o SQL Server 
-database = SQLServer(dsn='DSN_TCC', auth='windows')
+database = SQLServer(dsn='DSN_TCC')
 database.connect()
 database.set_database('DB_LIVE')
 print('Base de dados %s acessada' % database.current_database)

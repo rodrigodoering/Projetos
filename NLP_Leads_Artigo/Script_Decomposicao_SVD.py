@@ -62,11 +62,11 @@ for n_comp in n_componentes:
     x_train_svd = svd.fit_transform(x_train)
     x_test_svd = svd.transform(x_test)
 
-    # Condensa os arrays numéricos e uma string com os valores separados em vírgula
     # Processo para permitir armazenamento de maneira eficiente no banco de dados
     dense_array_train = x_train_svd.tolist()
     dense_array_test = x_test_svd.tolist()
-
+    
+    # Condensa os arrays numéricos e uma string com os valores separados em vírgula
     str_dense_train = list(map(lambda dense_array: ",".join(str(x) for x in dense_array), dense_array_train))
     str_dense_test = list(map(lambda dense_array: ",".join(str(x) for x in dense_array), dense_array_test))
 

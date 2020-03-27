@@ -19,11 +19,6 @@ print('Base de dados %s acessada' % database.current_database)
 # Extrai os dados
 dataset = database.select(table='tb_dataset_final')
 
-'''
-Nesse setor são importados os dados externos de termos que serão considerados ruído durante a etapa de limpeza do texto
-Depois é contruída a função que aplicará a normalização e limpeza do texto
-
-'''
 # Importa o txt contendo termos específicos relacionados a assinaturas de email entre outros
 with open('ruído específico.txt', 'r+', encoding='utf-8') as file:
     ruido_especifico = file.readline()

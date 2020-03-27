@@ -12,6 +12,7 @@ from sklearn.neural_network import MLPClassifier
 from Database import SQLServer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
+from funcoes_suporte import get_params_clf, computar_metricas
 
 # Acessa a database
 database = SQLServer(dsn='DSN_TCC')

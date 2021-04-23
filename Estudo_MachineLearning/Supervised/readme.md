@@ -1,7 +1,7 @@
 
 Primeiro bloco: Classificadores Lineares - Status de Conclusão
 
-Notebook 1 - Tarefas de Classificação e Dados Linearmente Separáveis (90& Concluído) 
+Notebook 1 - Tarefas de Classificação e Dados Linearmente Separáveis (90% Concluído) 
 
 Notebook 2 - Perceptron Learning Rule (70% Concluído)
 

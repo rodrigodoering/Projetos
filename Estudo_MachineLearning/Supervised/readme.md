@@ -11,8 +11,6 @@ Notebook 4 - Fitando Perceptron com Stochastic Gradient Descent + Momentum + Per
 
 Notebook 5 - Logistic Regression com  Stochastic Gradient Descent + Momentum + LogLoss Function (0% Concluído)
 
-Notebook 6 - Dados Não linearmente separáveis e superfícies de decisão complexas (20% Concluído)
+Notebook 6 - Introdução ao Multilayer Perceptron (20% Concluído)
 
-Notebook 7 - Introdução ao Multilayer Perceptron (20% Concluído)
-
-Notebook 8 - Codificando Multilayer Perceptron com Backpropagation (10% Concluído)
+Notebook 7 - Codificando Multilayer Perceptron com Backpropagation (10% Concluído)

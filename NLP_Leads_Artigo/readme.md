@@ -4,4 +4,4 @@
   disponibilizados nesse repositório público
   
   (english) My graduation conclusion article was linked with an internal data science project from my previous company, so it was not possible to upload most of its content. Anyway, for
-  the purposes of evalutaion by the university professors, some individual scripts (without sensible information) were uploaded here.
+  the purposes of evaluation by the university professors, some individual scripts (without sensible information) were uploaded here.

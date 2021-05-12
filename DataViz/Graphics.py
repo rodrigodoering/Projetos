@@ -31,8 +31,7 @@ NumericArray = Union[List[Numeric], np.ndarray, np.matrix]
 
 
 from _utils import Graph_Utils
-from _axes_instance
-
+from _axes_instance import AxesInstance
 
 
 class Graph(Graph_Utils):

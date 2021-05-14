@@ -37,8 +37,11 @@ SequenceLenght = Union[int, Sequence[Any]]
 
 class GraphBase:
     
+    
     def __init__(self, n_axis: int, current_Axes: _subplots.Axes=None, **kwargs):
         self.axObj = AxesInstance(n_axis=n_axis, current_Axes=current_Axes, **kwargs)
+        self.customized_specs = False
+        self.last_call = None
         
 
     def new_plot(self, n_axis: int = None, **kwargs) -> NoReturn:
@@ -46,6 +49,7 @@ class GraphBase:
             self.axObj = AxesInstance(n_axis=self.axObj.n_axis, **kwargs)
         else:
             self.axObj = AxesInstance(n_axis, **kwargs)
+        self.customized_specs = False
 
     
     @staticmethod
@@ -66,7 +70,83 @@ class GraphBase:
                 specs[key] = args[key]
         return specs
     
-                
+    
+    @staticmethod
+    def build_meshgrid(
+            n_dims, 
+            min_val: Numeric = -1, 
+            max_val: Numeric = 1, 
+            n_samples: int = 5, 
+            function: Callable = None, 
+            return_flat: bool = False
+        ) -> list:
+        
+        base_var = np.linspace(min_val, max_val, n_samples)
+        update_axis = lambda i: (slice(np.newaxis),) + (np.newaxis,) * i
+        # Cria o grid de valores, len(grid) = n_dims
+        grid = np.broadcast_arrays(*(base_var[update_axis(i)] for i in range(n_dims)))
+        
+        # Se for passada uma função para a última dimensão
+        if function is not None:
+            dim_grid_shape = tuple(n_samples for i in range(n_dims))
+            last_dim_grid = function(np.array([vec.flatten() for vec in grid[:-1]]).T).reshape(dim_grid_shape)
+            grid[-1] = last_dim_grid
+            
+        if return_flat:
+            # retorna os valores do grid como rowvectors de shape (n_vals^n_dims x n_dims)
+            return np.array([vec.ravel() for vec in grid]).T
+    
+        return grid
+    
+
+    def set_plot_specs(
+            self,
+            function_id: str,
+            labels: Iterable[str] = None, 
+            fontsize: int = None, 
+            lims: Iterable[tuple] = None, 
+            elev: int = None, 
+            azim: int = None,
+            grid: bool = None,
+            title: str = None,
+            legend: bool = False
+        ) -> NoReturn:
+              
+        self.axObj.set_ax_labels(labels, fontsize)
+        self.axObj.set_ax_limits(lims)
+        
+        if self.axObj.n_axis == 3:
+            self.axObj.set_ax_view(elev, azim)
+        
+        if title is not None:
+            self.axObj.set_ax_title(title)
+        
+        if grid:
+            self.axObj.ax.grid()
+        
+        if legend:
+            self.axObj.ax.legend()
+        
+        self.customized_specs = True                
+        self.last_call = function_id
+    
+    
+    
+    def control_plot_specs(self, specs, function_name):
+        if specs is not None and not self.customized_specs:
+            plot_specs = GraphBase.built_spec_kwargs(specs)
+            
+            # function_id é um argumento posicional de set_plot_specs(), 
+            # declarei o argumento para legibilidade
+            self.set_plot_specs(function_id=function_name, **plot_specs)
+        
+        elif specs is not None and self.customized_specs:
+            print('Specs já definido durante a chamada da função %s' % self.last_call)
+        
+        else:
+            pass
+    
+    
     def iter_params(
             self,
             X: NumericArray, 
@@ -104,58 +184,3 @@ class GraphBase:
         for vec, _str_ in zip(coords, annotations):
             coord_vals = (vec[i] + offset * int(i == ax_offset) for i in range(self.axObj.n_axis))
             self.axObj.ax_text(*coord_vals, text=_str_, **kwargs)
-
-
-    def set_plot_specs(
-            self, 
-            labels: Iterable[str] = None, 
-            fontsize: int = None, 
-            lims: Iterable[tuple] = None, 
-            elev: int = None, 
-            azim: int = None,
-            grid: bool = None,
-            title: str = None,
-            legend: bool = False
-        ) -> NoReturn:
-        
-        self.axObj.set_ax_labels(labels, fontsize)
-        self.axObj.set_ax_limits(lims)
-        
-        if self.axObj.n_axis == 3:
-            self.axObj.set_ax_view(elev, azim)
-        
-        if title is not None:
-            self.axObj.set_ax_title(title)
-        
-        if grid:
-            self.axObj.ax.grid()
-        
-        if legend:
-            self.axObj.ax.legend()
-
-
-    def generate_grid_coords(
-            self, 
-            min_val: Numeric = -1, 
-            max_val: Numeric = 1, 
-            n_vals: int = 5, 
-            dim_func: Callable = None, 
-            return_flat: bool = False
-        ) -> NumericArray:
-        
-        base_var = np.linspace(min_val, max_val, n_vals)
-        update_axis = lambda i: (slice(np.newaxis),) + (np.newaxis,) * i
-        # Cria o grid de valores, len(grid) = n_dims
-        grid = np.broadcast_arrays(*(base_var[update_axis(i)] for i in range(self.axObj.n_axis)))
-        
-        # Se for passada uma função para a última dimensão
-        if dim_func is not None:
-            dim_grid_shape = tuple(n_vals for i in range(self.axObj.n_axis))
-            last_dim_grid = dim_func(np.array([vec.flatten() for vec in grid[:-1]]).T).reshape(dim_grid_shape)
-            grid[-1] = last_dim_grid
-            
-        if return_flat:
-            # retorna os valores do grid como rowvectors de shape (n_vals^n_dims x n_dims)
-            return np.array([vec.flatten() for vec in grid]).T
-    
-        return grid

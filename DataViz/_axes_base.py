@@ -113,19 +113,19 @@ class AxesInstance:
             raise _exceptions.AxisCoordinatesError
     
     
-    def control_plot_params(plot_type: str) -> Callable: 
-        
+    def control_plot_params(input_type: str) -> Callable: 
+        # Função permite aplicar argumentos no decorador
         def decorator(func): 
-            
+            # função decoradora
             @functools.wraps(func)
             def wrapper(self, *args, **kwargs):
-                if plot_type == 'coordinates':
+                if input_type == 'coordinates':
                     required_vals = self.n_axis
                 
-                elif plot_type == 'vector':
+                elif input_type == 'vector':
                     required_vals = self.n_axis * 2
                 
-                elif plot_type == 'surface':
+                elif input_type == 'grid':
                     required_vals = 3
                     
                 else:
@@ -137,40 +137,39 @@ class AxesInstance:
                 print('required', required_vals, '\n')
                 #print(args)
                 self.validate_sequence(len(args), required_vals)
-                                
+                # retorna função do objeto ax
                 return func(self, *args, **kwargs) 
-            
+            # retorna o decorador
             return wrapper  
-        
         return decorator
       
     
-    @control_plot_params(plot_type='coordinates')
+    @control_plot_params(input_type='coordinates')
     def ax_text(self, *coords: NumericArray, text: str, **kwargs) -> NoReturn:
         self.ax.text(*coords, s=text, **kwargs)
     
     
-    @control_plot_params(plot_type='coordinates')
+    @control_plot_params(input_type='coordinates')
     def ax_plot(self, *coords: NumericArray,**kwargs) -> NoReturn:
         self.ax.plot(*coords, **kwargs)
 
 
-    @control_plot_params(plot_type='coordinates')
+    @control_plot_params(input_type='coordinates')
     def ax_scatter(self, *coords: NumericArray, **kwargs) -> NoReturn:
         self.ax.scatter(*coords, **kwargs)  
         
         
-    @control_plot_params(plot_type='vector')
+    @control_plot_params(input_type='vector')
     def ax_quiver(self, *coords: NumericArray, origin: tuple = None, **kwargs) -> NoReturn:      
         tail_coords = tuple(0 for i in range(self.n_axis)) if origin is None else origin
         self.ax.quiver(*tail_coords, *coords, **kwargs)
  
 
-    @control_plot_params(plot_type='surface')
+    @control_plot_params(input_type='grid')
     def ax_contourf(self, *coords: NumericArray, levels: int = None, **kwargs) -> NoReturn:
-        self.ax.contourf(X, Y, levels=levels, **kwargs)
+        self.ax.contourf(*coords, levels=levels, **kwargs)
 
 
-    @control_plot_params(plot_type='surface')
+    @control_plot_params(input_type='grid')
     def ax_surface(self, *coords, **kwargs) -> NoReturn:
-        raise NotImplementedError
+        self.ax.plot_surface(*coords, **kwargs)

@@ -43,6 +43,7 @@ class Plots(GraphBase):
         super(Plots, self).__init__(n_axis, current_Axes=current_Axes, **kwargs)
     
     
+    
     def Function(
             self, 
             function: Callable, 
@@ -81,11 +82,10 @@ class Plots(GraphBase):
             p0 = (0 if i + 1 < self.axObj.n_axis else intercept[0] for i in range(self.axObj.n_axis))
             self.axObj.ax_scatter(*p0, color='red', marker='X')
         
-        if specs is not None:
-            plot_specs = self.built_spec_kwargs(specs)
-            self.set_plot_specs(**plot_specs)
-    
+        self.control_plot_specs(specs,'Plots.Function')
 
+            
+  
     def Scatter(
             self,
             X: NumericArray, 
@@ -102,7 +102,6 @@ class Plots(GraphBase):
         
        self.axObj.ax_scatter(*self.iter_params(X, Y, Z), **kwargs)
 
-       
        if annot is not None:
            coords = np.stack([*self.iter_params(X,Y,Z)], axis=1)
            self.annotate(
@@ -113,13 +112,81 @@ class Plots(GraphBase):
                fontsize = annot_fontsize,
                color = annot_color
            )
-       if specs is not None:
-           plot_specs = self.built_spec_kwargs(specs)
-           self.set_plot_specs(**plot_specs)
+           
+       self.control_plot_specs(specs,'Plots.Scatter')
+           
    
-    
-
           
-    def Surface(self):
-        pass
+    def Surface(
+            self,
+            grid: NumericArray = None,
+            function: Callable = None,
+            min_val: Numeric = -1,
+            max_val: Numeric = 1,
+            n_samples: int = 5,
+            levels: int = None,
+            specs: dict = None,
+            **kwargs
+            
+        ) -> NoReturn:
+        
+        if self.axObj.n_axis == 2:
+            
+            if grid is None:
+                grid_xy = GraphBase.build_meshgrid(2, min_val, max_val, n_samples)
+                print('xy', grid_xy)
+                Z = function(np.array([vec.ravel() for vec in grid_xy]).T).reshape(n_samples, n_samples)
+                print('Z', Z)
+                grid = grid_xy
+                grid.append(Z)
+                print('Grid', grid)
+                
+            self.axObj.ax_contourf(*grid, levels=levels, **kwargs)
+            
+        else:    
+            if grid is None:
+                grid = GraphBase.build_meshgrid(3, min_val, max_val, n_samples, function)
+    
+            self.axObj.ax_surface(*grid, **kwargs)
+            
+        self.control_plot_specs(specs,'Plots.Surface')
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
                   

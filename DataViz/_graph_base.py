@@ -11,28 +11,15 @@ import numpy as np
 import seaborn as sb
 import functools
 
+
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
+
 
 # User defined errors
 import _exceptions
 from _axes_base import AxesInstance
-
-from typing import NoReturn
-from typing import Optional
-from typing import Iterator 
-from typing import Callable
-from typing import Generator 
-from typing import Iterable
-from typing import Union
-from typing import List
-from typing import Any
-from typing import Sequence
-
-Numeric = Union[int, float, complex]
-NumericArray = Union[List[Numeric], np.ndarray, np.matrix]
-NumpyArray = Union[np.ndarray, np.matrix]
-SequenceLenght = Union[int, Sequence[Any]]
+from _type_definitions import *
 
 
 class GraphBase:
@@ -72,31 +59,10 @@ class GraphBase:
     
     
     @staticmethod
-    def build_meshgrid(
-            n_dims, 
-            min_val: Numeric = -1, 
-            max_val: Numeric = 1, 
-            n_samples: int = 5, 
-            function: Callable = None, 
-            return_flat: bool = False
-        ) -> list:
-        
-        base_var = np.linspace(min_val, max_val, n_samples)
-        update_axis = lambda i: (slice(np.newaxis),) + (np.newaxis,) * i
-        # Cria o grid de valores, len(grid) = n_dims
-        grid = np.broadcast_arrays(*(base_var[update_axis(i)] for i in range(n_dims)))
-        
-        # Se for passada uma função para a última dimensão
-        if function is not None:
-            dim_grid_shape = tuple(n_samples for i in range(n_dims))
-            last_dim_grid = function(np.array([vec.flatten() for vec in grid[:-1]]).T).reshape(dim_grid_shape)
-            grid[-1] = last_dim_grid
-            
-        if return_flat:
-            # retorna os valores do grid como rowvectors de shape (n_vals^n_dims x n_dims)
-            return np.array([vec.ravel() for vec in grid]).T
-    
-        return grid
+    def flat_grid(grid):
+        flatten = [coords.ravel() for coords in grid]
+        return np.array(flatten).T
+
     
 
     def set_plot_specs(
@@ -187,29 +153,11 @@ class GraphBase:
                 yield coord
                 
         elif self.axObj.n_axis == 3 and Z is None:
-            raise _exceptions.MissingZError
+            raise Error('MissingZ')
             
         else:
             for coord in (X, Y, Z):
                 yield coord
 
 
-    def annotate(
-            self, 
-            coords: NumericArray, 
-            annotations: Iterable[str], 
-            offset: float = 0.1, 
-            ax_offset: int = 0, 
-            **kwargs
-        ) -> NoReturn:
-        
-        coords = GraphBase.numpy_convert(coords)
-        
-        # Se um axis inexistente for passado, zera o offset
-        if ax_offset > self.axObj.n_axis:
-            print('AxesInstance: ax_offset não existe no plot, desconsiderando offset')
-            offset = 0
-        
-        for vec, _str_ in zip(coords, annotations):
-            coord_vals = (vec[i] + offset * int(i == ax_offset) for i in range(self.axObj.n_axis))
-            self.axObj.ax_text(*coord_vals, text=_str_, **kwargs)
+

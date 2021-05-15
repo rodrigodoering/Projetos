@@ -15,21 +15,7 @@ from matplotlib.axes import _subplots
 
 # User defined errors
 import _exceptions
-
-from typing import NoReturn
-from typing import Optional
-from typing import Iterator 
-from typing import Callable
-from typing import Generator 
-from typing import Iterable
-from typing import Union
-from typing import List
-from typing import Any
-from typing import Sequence
-
-Numeric = Union[int, float, complex]
-NumericArray = Union[List[Numeric], np.ndarray, np.matrix]
-SequenceLenght = Union[int, Sequence[Any]]
+from _type_definitions import *
 
 
 class AxesInstance:
@@ -48,7 +34,7 @@ class AxesInstance:
             self.ax = current_Axes
             
         else:
-            raise _exceptions.AxesInstanceError
+            raise Error('AxesInstance')
         
         self.n_axis = n_axis
         self.axis_ids = ['x','y'] if n_axis == 2 else ['x', 'y', 'z']       
@@ -61,7 +47,7 @@ class AxesInstance:
             self.fig = plt.figure(**kwargs)
             self.ax = self.fig.gca(projection='3d')
         else:
-            raise _exceptions.NumberAxisError
+            raise Error('NumberAxis')
      
         
     def get_ax_method(self, method_list: list) -> Generator[Callable, str, NoReturn]:
@@ -110,7 +96,7 @@ class AxesInstance:
     def validate_sequence(self, _input_: SequenceLenght, required: int):
         size_input = _input_ if isinstance(_input_, int) else len(_input_)
         if size_input != required:
-            raise _exceptions.AxisCoordinatesError
+            raise Error('AxisCoordinates')
     
     
     def control_plot_params(input_type: str) -> Callable: 

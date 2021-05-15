@@ -17,20 +17,8 @@ from matplotlib.axes import _subplots
 # User defined errors
 import _exceptions
 from _graph_base import GraphBase
-
-from typing import NoReturn
-from typing import Optional
-from typing import Iterator 
-from typing import Callable
-from typing import Generator 
-from typing import Iterable
-from typing import Union
-from typing import List
-from typing import Any
-from typing import Sequence
-
-Numeric = Union[int, float, complex]
-NumericArray = Union[List[Numeric], np.ndarray, np.matrix]
+from _exceptions import Error
+from _type_definitions import *
 
 
 class Plots(GraphBase):
@@ -41,6 +29,28 @@ class Plots(GraphBase):
     def __init__(self, n_axis: int, current_Axes: _subplots.Axes=None, **kwargs) -> NoReturn:
         # Inicia os parâmetros 
         super(Plots, self).__init__(n_axis, current_Axes=current_Axes, **kwargs)
+    
+    
+    
+    def Annotate(
+            self, 
+            coords: NumericArray, 
+            annotations: Iterable[str], 
+            offset: float = 0.1, 
+            ax_offset: int = 0, 
+            **kwargs
+        ) -> NoReturn:
+        
+        coords = GraphBase.numpy_convert(coords)
+        
+        # Se um axis inexistente for passado, zera o offset
+        if ax_offset > self.axObj.n_axis:
+            print('AxesInstance: ax_offset não existe no plot, desconsiderando offset')
+            offset = 0
+        
+        for vec, _str_ in zip(coords, annotations):
+            coord_vals = (vec[i] + offset * int(i == ax_offset) for i in range(self.axObj.n_axis))
+            self.axObj.ax_text(*coord_vals, text=_str_, **kwargs)  
     
     
     
@@ -113,8 +123,8 @@ class Plots(GraphBase):
            
         self.control_plot_specs(specs,'Plots.Scatter')
            
-   
-          
+
+        
     def Surface(
             self,
             grid: NumericArray = None,
@@ -128,29 +138,30 @@ class Plots(GraphBase):
             
         ) -> NoReturn:
         
+        if grid is None:
+            
+            if callable(function):
+                base_variable = np.linspace(min_val, max_val, n_samples)
+                grid = np.broadcast_arrays(base_variable[np.newaxis,:], base_variable[:,np.newaxis])
+                
+                Z = GraphBase.numpy_convert(
+                    function(GraphBase.flat_grid(grid))
+                )
+                
+                grid.append(Z.reshape(n_samples, n_samples))                
+                          
+            else:
+                raise Error('InsufficientInput')
         
         if self.axObj.n_axis == 2:
-            
-            if grid is None:
-                grid_xy = GraphBase.build_meshgrid(2, min_val, max_val, n_samples)
-                print('xy', grid_xy)
-                Z = function(np.array([vec.ravel() for vec in grid_xy]).T).reshape(n_samples, n_samples)
-                print('Z', Z)
-                grid = grid_xy
-                grid.append(Z)
-                print('Grid', grid)
-                
             self.axObj.ax_contourf(*grid, levels=levels, **kwargs)
             
-        else:    
-            if grid is None:
-                grid = GraphBase.build_meshgrid(3, min_val, max_val, n_samples, function)
-    
+        else:
             self.axObj.ax_surface(*grid, **kwargs)
             
         self.control_plot_specs(specs,'Plots.Surface')
         
-            
+      
             
             
             

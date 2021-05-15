@@ -6,42 +6,39 @@ Created on Wed May 12 19:56:10 2021
 """
 
 
-   
-class AxesInstanceError(Exception):
+class UserDefinedError(Exception):
     
-    def __init__(self):
-        error_msg = 'Parâmetro "current_Axes": objeto matplotlib.axes._subplots.Axes'
-        super(AxesInstanceError, self).__init__(error_msg)
+    def __init__(self, error_msg):
+        super(UserDefinedError, self).__init__(error_msg)
+        
+        
 
-
-
-class NumberAxisError(Exception):
+class Error(UserDefinedError):
     
-    def __init__(self):
-        error_msg = 'Parâmetro n_axis deve ser 2 (plot bidimensional) ou 3 (plot tridimensional)'
-        super(NumberAxisError, self).__init__(error_msg)
-   
+    def __init__(self, _error_: str):
+           
+        Erros = {
+            
+            'AxesInstance':'Parâmetro "current_Axes": objeto matplotlib.axes._subplots.Axes',
+            
+            'NumberAxis': 'Parâmetro n_axis deve ser 2 (plot bidimensional) ou 3 (plot tridimensional)',
+            
+            'AxisCoordinates': 'O número de coordenadas passadas é incompatível com número de eixos',
+            
+            'AxisFunction': 'Essa função não se aplica ao número atual de eixos do plot',
+            
+            'MissingZ':'O plot é tridimensional, e os valores da terceira dimensão não foram passados',
+            
+            'InsufficientInput': """Inputs insuficientes para gerar o plot: \nPasse um grid de coordenadas pronto ou então uma função Callable"""
 
-class AxisCoordinatesError(Exception):
+        }
+        
+        if _error_ not in Erros.keys():
+            raise Exception('Erro não especificado')
+        
+        else:
+            error_msg = Erros[_error_]
+            super(Error, self).__init__(error_msg)
     
-    def __init__(self):
-        error_msg = 'O número de coordenadas passadas é incompatível com número de eixos'
-        super(AxisCoordinatesError, self).__init__(error_msg)
-
     
-
-class AxisFunctionError(Exception):
-    
-    def __init__(self):
-        error_msg = 'Essa função não se aplica ao número atual de eixos do plot'
-        super(AxisFunctionError, self).__init__(error_msg)
-
-
-
-class MissingZError(Exception):
-    
-    def __init__(self):
-        error_msg = 'O plot é tridimensional, e os valores da terceira dimensão não foram passados'
-        super(MissingZError, self).__init__(error_msg)
-
 

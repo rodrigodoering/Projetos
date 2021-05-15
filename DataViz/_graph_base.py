@@ -135,7 +135,6 @@ class GraphBase:
     def control_plot_specs(self, specs, function_name):
         if specs is not None and not self.customized_specs:
             plot_specs = GraphBase.built_spec_kwargs(specs)
-            
             # function_id é um argumento posicional de set_plot_specs(), 
             # declarei o argumento para legibilidade
             self.set_plot_specs(function_id=function_name, **plot_specs)
@@ -147,13 +146,43 @@ class GraphBase:
             pass
     
     
+    def full_coordinates(self, X: NumericArray) -> bool:
+        X_numpy = GraphBase.numpy_convert(X)
+        
+        # Se X é unidimensional, então não pode conter coordenadas de multiplos eixos
+        if X_numpy.ndim == 1:
+            return False
+        
+        # Se as condições acimas não foram satisfeitas, as dimensões de X serão testadas
+        elif X.ndim == 2:
+            # Assume-se também que X está orientado como samples x features
+            n_samples, n_features = X.shape
+            
+            if n_features == self.axObj.n_axis:
+                return True
+            
+            else:
+               return False 
+            
+        # Para tensores (ndim > 2), mantem-se os inputs como foram passados
+        else:
+            return False
+                
+    
+    
     def iter_params(
             self,
             X: NumericArray, 
             Y: NumericArray, 
             Z: NumericArray = None,
         ) -> Iterator[NumericArray]:
-        if self.axObj.n_axis == 2:
+        is_none = (_input_ is None for _input_ in [Y,Z])
+        
+        if self.full_coordinates(X) and all(is_none):
+            for coord in X.T:
+                yield coord
+        
+        elif self.axObj.n_axis == 2:
             for coord in (X, Y):
                 yield coord
                 

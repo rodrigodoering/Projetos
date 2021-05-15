@@ -129,7 +129,7 @@ class AxesInstance:
                     required_vals = 3
                     
                 else:
-                    raise NotImplementedError
+                    raise Exception('Something weird happened')
                     
                 # DEBUG
                 print('Call:', func.__name__)

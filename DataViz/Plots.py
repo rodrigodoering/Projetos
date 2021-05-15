@@ -47,7 +47,7 @@ class Plots(GraphBase):
     def Function(
             self, 
             function: Callable, 
-            domain: Union[NumericArray, tuple] = None,
+            X: Union[NumericArray, tuple] = None,
             n_samples: int = 10,
             plot_intercept: bool = False,
             specs: dict = None,
@@ -57,21 +57,18 @@ class Plots(GraphBase):
         
         n_features = self.axObj.n_axis - 1
         
-        if domain is None:
+        if X is None:
             X = np.array(
                 [np.linspace(0,1,n_samples) for i in range(n_features)]
                 ).reshape(n_samples, n_features)
     
-        elif isinstance(domain, tuple):
-            _min_ = domain[0]
-            _max_ = domain[1]
+        elif isinstance(X, tuple):
+            _min_ = X[0]
+            _max_ = X[1]
             X = np.array(
                 [np.linspace(_min_, _max_, n_samples) for i in range(n_features)]
                 ).reshape(n_samples, n_features)           
-        
-        else:
-            X = domain
-        
+                
         Y = function(X)
         
         self.axObj.ax_plot(*X.T, Y, label=function_label, **kwargs)
@@ -89,7 +86,7 @@ class Plots(GraphBase):
     def Scatter(
             self,
             X: NumericArray, 
-            Y: NumericArray, 
+            Y: NumericArray = None, 
             Z: NumericArray = None,
             annot: Iterable[str] = None,
             annot_offset: float = 0.1,
@@ -99,21 +96,22 @@ class Plots(GraphBase):
             specs: dict = None,
             **kwargs
         ):
-        
-       self.axObj.ax_scatter(*self.iter_params(X, Y, Z), **kwargs)
 
-       if annot is not None:
-           coords = np.stack([*self.iter_params(X,Y,Z)], axis=1)
-           self.annotate(
-               coords = coords, 
-               annotations = annot, 
-               offset = annot_offset, 
-               ax_offset = annot_ax_offset, 
-               fontsize = annot_fontsize,
-               color = annot_color
-           )
+        self.axObj.ax_scatter(*self.iter_params(X, Y, Z), **kwargs)
+
+        if annot is not None:
+            coords = np.stack([*self.iter_params(X,Y,Z)], axis=1)
+
+            self.annotate(
+                coords = coords, 
+                annotations = annot, 
+                offset = annot_offset, 
+                ax_offset = annot_ax_offset, 
+                fontsize = annot_fontsize,
+                color = annot_color
+            )
            
-       self.control_plot_specs(specs,'Plots.Scatter')
+        self.control_plot_specs(specs,'Plots.Scatter')
            
    
           
@@ -129,6 +127,7 @@ class Plots(GraphBase):
             **kwargs
             
         ) -> NoReturn:
+        
         
         if self.axObj.n_axis == 2:
             

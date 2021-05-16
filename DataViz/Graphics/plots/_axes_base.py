@@ -13,7 +13,7 @@ import functools
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
-from .utils._exceptions import *
+from .utils._exceptions import Error
 from .utils._type_definitions import *
 
 

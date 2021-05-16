@@ -107,7 +107,8 @@ class Plot(GraphBase):
             annot_color: str = 'black',
             specs: dict = None,
             **kwargs
-        ):
+            
+        ) -> NoReturn:
 
         self.axObj.ax_scatter(*self.iter_params(X, Y, Z), **kwargs)
 
@@ -166,7 +167,25 @@ class Plot(GraphBase):
       
             
             
-            
+    def Vectors(
+            self,
+            X: NumericArray, 
+            Y: NumericArray = None, 
+            Z: NumericArray = None,
+            annot: Iterable[str] = None,
+            annot_offset: float = 0.1,
+            annot_ax_offset: int = 0,
+            annot_fontsize: int = 12,
+            annot_color: str = 'black',
+            specs: dict = None,
+            **kwargs
+        
+        ) -> NoReturn:
+        raise NotImplementedError
+        
+        
+
+        
             
             
             

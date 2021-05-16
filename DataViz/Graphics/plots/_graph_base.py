@@ -16,9 +16,9 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
 
-from Graphics.plots._axes_base import AxesInstance
-from Graphics.utils._exceptions import *
-from Graphics.utils._type_definitions import *
+from .plots._axes_base import AxesInstance
+from ..utils._exceptions import *
+from ..utils._type_definitions import *
 
 
 class GraphBase:

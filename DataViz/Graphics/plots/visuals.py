@@ -14,14 +14,9 @@ import functools
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
-
-import sys
-path = "C:\\Users\\rodri\\Desktop\\Relacionados a Código\\github_Rodrigo\\Notebooks\\DataViz_Obj"
-sys.path.append(path)
-
-from Graphics.utils._exceptions import *
-from Graphics.utils._type_definitions import *
-from Graphics.plots._graph_base import GraphBase
+from ..utils._exceptions import *
+from ..utils._type_definitions import *
+from ._graph_base import GraphBase
   
 
 class Plot(GraphBase):

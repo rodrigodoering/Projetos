@@ -6,14 +6,7 @@ Created on Wed May 12 19:56:10 2021
 """
 
 
-class UserDefinedError(Exception):
-    
-    def __init__(self, error_msg):
-        super(UserDefinedError, self).__init__(error_msg)
-        
-        
-
-class Error(UserDefinedError):
+class Error(Exception):
     
     def __init__(self, _error_: str):
            
@@ -34,11 +27,12 @@ class Error(UserDefinedError):
         }
         
         if _error_ not in Erros.keys():
-            raise Exception('Erro não especificado')
+            error_msg = 'Ocorreu um erro não especificado'
         
         else:
             error_msg = Erros[_error_]
-            super(Error, self).__init__(error_msg)
+            
+        super(Error, self).__init__(error_msg)
     
     
 

@@ -13,8 +13,8 @@ import functools
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
-from Graphics.utils._exceptions import *
-from Graphics.utils._type_definitions import *
+from .utils._exceptions import *
+from .utils._type_definitions import *
 
 
 class AxesInstance:

@@ -278,7 +278,7 @@ class SQLServer(object):
                 print('Raised Error: {}'.format(e))
 
 
-    @staticmethod
+
     def export_(self, df, file_, file_type, json_orient='index'):
         # Export data from dataframe to specified file path, format and json orientation (if passed)
         # Created primarily to be used within export_to_file function, although it might be used separately as well

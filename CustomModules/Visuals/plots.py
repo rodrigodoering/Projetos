@@ -20,6 +20,7 @@ from Visuals._base_._graph_base import GraphBase
   
 
 class Plot(GraphBase):
+  
     
     """ Representa o gráfico, herda de graph_base """
        
@@ -58,6 +59,7 @@ class Plot(GraphBase):
         
         # Se um axis inexistente for passado, zera o offset, por exemplo ax_offset = 2 em um plot 2D (axis 0 e 1 apenas)
         if ax_offset > self.axObj.n_axis:
+            # Optei aqui por não gerar um erro, apenas exibir uma mensagem no Stdout e desconsiderar o offset
             print('AxesInstance: ax_offset não existe no plot, desconsiderando offset')
             offset = 0
         

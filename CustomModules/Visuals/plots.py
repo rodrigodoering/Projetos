@@ -201,7 +201,9 @@ class Plot(GraphBase):
                     self.validate_sequence(param, n_vecs)
         
         if origin is not None:
-            self.validate_sequence(origin, self.axObj.n_axis)
+            # ponto de origem deve ter a mesma dimensionalidade do plot
+            # i.e mesmo número de componentes
+            self.axObj.assert_sequence(origin, None)
         
         vec_scale = {'angles':'xy', 'scale_units':'xy', 'scale':1}
         colors = ['black' for i in range(n_vecs)] if colors is None else colors

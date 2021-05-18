@@ -56,7 +56,7 @@ class Plot(GraphBase):
         
         coords = GraphBase.numpy_convert(coords)
         
-        # Se um axis inexistente for passado, zera o offset
+        # Se um axis inexistente for passado, zera o offset, por exemplo ax_offset = 2 em um plot 2D (axis 0 e 1 apenas)
         if ax_offset > self.axObj.n_axis:
             print('AxesInstance: ax_offset não existe no plot, desconsiderando offset')
             offset = 0

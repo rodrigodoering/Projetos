@@ -56,11 +56,13 @@ class AxesInstance:
             yield getattr(self.ax, func)
 
 
-    def assert_sequence(self, _input_: Sequence, required: int) -> Sequence:
+    def assert_sequence(self, _input_: Sequence, required: int = None) -> Sequence:
+        if required is None:
+            required = self.n_axis
         size_input = len(_input_)
         assert_msg = 'Valores na Sequência: %d ; Exigido pela função %s: %d' 
         assert size_input == required, assert_msg % (size_input, self.last_function_call, required)
-        #return _input_
+
 
     
     def set_ax_labels(self, labels: list = None, fontsize: int = None) -> NoReturn:

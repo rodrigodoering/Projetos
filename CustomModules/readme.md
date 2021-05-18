@@ -27,10 +27,15 @@ Description of Modules:
 
 3) Visuals: package for automatization of Matplotlib.pyplot based visualizations written as classes (OOP):
        - Visuals.plots contains Plot object, the main class to be imported on presentations and jupyter notebooks
-       - For now, suports ploting functions, scatter plots, surfaces (both 2D and 3D) and vectors with a variety of possible customizations
+       
+       - For now, supports ploting functions, scatter plots, surfaces (both 2D and 3D) and vectors with a variety of possible customizations
+       
        - It allows multiple calls and graphs in the same plot for complex visualizations (which is basically the main goal of this module - writting nice plots with few lines)
+       
        - Visuals._base_ and Visuals._utils_ are subpackages containing the classes and functions imported to Visuals.plots.Plot
+       
        - Visuals._base_._graph_base.GraphBase_ is the Superclass inherited by Plot class
+       
        - Visuals._base_._axes_base.AxesInstance_ has a composition relation with Visuals._base_._graph_base.GraphBase_
  
 

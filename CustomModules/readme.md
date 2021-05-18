@@ -5,12 +5,12 @@ Email: rodrigodoeringneves@gmail.com
 Phone: +55 11 98503-1110 (São Paulo - Brasil)
 
 - This repository contains custom modules and packages written for a variety of purposes, both professional and personal.
-- Since no sensible information exists within this modules, I decided to upload it as a public repos to facilitate importing the modules to other environments but also for easily sharing with others
+- Since no sensible information exists within this modules, I decided to upload it as a public repos to facilitate importing the modules to other environments but also to easily share with others
 - Each folder here represents either a custom package with sub-modules or a single module
 
 Description of Modules:
 
-1) Database : module for integration between relational databases and Python. Primarly written to integrate with Microsoft SQL Server and Microsoft Azure SQL via ODBC Driver connection implemented with pyodbc module. Suports several relational database taskes such as: 
+1) Database : module for integration between relational databases and Python. Primarly written to integrate with Microsoft SQL Server and Microsoft Azure SQL via ODBC Driver connection implemented with pyodbc module. Supports several relational database taskes such as: 
        
        - Creating databases
        - Creating and accessing tables and schemas

@@ -37,6 +37,9 @@ class Plot(GraphBase):
     def new_plot(self, n_axis: int = None, specs: dict = None, **kwargs):
         self.new_axes_obj(n_axis, **kwargs)
         
+        # Por agora, definir os specs do plot envolve enviar um dicionário com keys e valores
+        # O dicionário é processado e enviado para a função que aplica os parâmetros
+        # Eventualmente essa função será redesenhada com um argumento por parâmetro do plot e não será mais necessário passar os specs como um dicionário
         if specs is not None:
             plot_specs = GraphBase.build_spec_kwargs(specs)
             self.set_plot_specs(**plot_specs)

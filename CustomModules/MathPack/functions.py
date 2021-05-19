@@ -19,6 +19,14 @@ import numpy as np
 from numpy.linalg import norm
 
 
+# Customizando algumas variáveis
+e = np.e #Euler coeff -> 2.71828182...
+pi = np.pi #Pi -> 3.141592...
+root = lambda x: x**(1/2)
+square = lambda x: x**2
+cube = lambda x: x**3
+
+
 # FUNÇÃO: get_angle
 def get_angle(u, v, return_degrees=False, **kwargs):
     """
@@ -120,13 +128,16 @@ def hyperplane_function(w, b=0, t=0):
     return lambda x: -np.dot(x, w_reduzido.T) + b_reduzido   
 
 
+def z_score(mean, std):
+    return x: (x - mean) / std
 
 # FUNÇÃO: Normal_pdf
 def normal_prob_density(mean, std):
-    e = np.e #Euler coeff -> 2.71828182...
-    pi = np.pi #Pi -> 3.141592...
-    return lambda x: 1 / (std * (2*pi)**1/2) * e**(-(x - mean)**2 / (2 * std**2))     
+    return lambda x: 1 / (std * root(2*pi)) * e**(-square(x - mean) / (2 * square(std)))     
 
-
+def normal_cumulative_density(mean, std):
+    z = z_score(mean, std)
+    integrand = lambda x: e**(-square(z_score(x))/2)
+    return lambda x: 1/root(2*np.pi) * quad(integrand, -np.inf, z_x)
 
 

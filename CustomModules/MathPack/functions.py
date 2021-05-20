@@ -128,6 +128,56 @@ def hyperplane_function(w, b=0, t=0):
     return lambda x: -np.dot(x, w_reduzido.T) + b_reduzido   
 
 
+# Função SVD_decomp
+def SVD_decomp(X, n_comps=2, normalize=True):
+    '''
+    Descrição
+    ---------
+    1º Aplica a decomposição de valor singular (Singular Value Decomposition) de uma matriz X: 
+    
+    𝑋 = 𝑈𝑆𝑉^𝑇
+    
+    Onde 𝑈 e 𝑉 são os autovetores esquerdos e direitos de 𝑋 
+    e 𝑆 é uma matriz diagonal contendo os valores singulares
+    
+    2º Projeta 𝑋 na nova base multiplicando este pelos autovetores direitos: 𝑋′=𝑋𝑉'
+    
+    **Se a matriz 𝑋 for ou estiver normalizada com o z-score, e portanto, 
+    tiver média = 0 e desvio padrão = 1, então a decomposição com SVD será equivalente 
+    à decomposição com PCA, onde os autovalores da eigendecomposition da matriz de
+    covariância de 𝑋 serão equivalentes aos valores singulares decompostos de 𝑋:  
+    
+    cov(𝑋) = 𝑉𝐷𝑉−1 ⇔ 𝐷 = 𝑆²/(𝑛−1)
+       
+    Onde 𝑛 é o número de samples da matriz 𝑋. As implementações de PCA (como a do próprio sklearn) costumam utilizar o SVD
+    por ser um cálculo mais performático e numéricamente estável dado que pula a etapa de criar a matriz de covariância de 𝑋 
+  
+    
+    Argumentos
+    ----------
+    X - np.ndarray matriz de valores para serem decompostos com shape n_samples x n_dims
+    n_comps - dimensionalidade do dataset reduzido. n_comps < n_dims. Basicamente, quantos dos autovetores são usados para decompor X
+    normalize - se verdadeiro, aplica o z-score aos dados originais, e a decomposição passa a se comportar como o PCA
+    '''
+
+    if isinstance(X, list):
+        X = np.array(X)
+        
+    if normalize:
+        X = (X - X.mean(axis=0)) / X.std(axis=0)
+        
+    # Realiza a decomposição de X com o SVD
+    U,S,V = svd(X)
+    X_reduzido = np.dot(X, V.T[:,0:n_comps])
+    
+    # Computa os autovetores e a variância explicada da decomposição
+    autovalores = (S**2)/(len(X) - 1)
+    var_exp = sum(autovalores[:n_comps] / sum(autovalores))
+    return var_exp, X_reduzido
+
+
+
+
 def z_score(mean, std):
     return lambda x: (x - mean) / std
 

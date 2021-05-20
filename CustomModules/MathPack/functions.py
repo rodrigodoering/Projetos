@@ -138,6 +138,6 @@ def normal_prob_density(mean, std):
 def normal_cumulative_density(mean, std):
     z_x = z_score(mean, std)(x)
     integrand = lambda x: e**(-square(x)/2)
-    return lambda x: 1/root(2*np.pi) * quad(integrand, -np.inf, z_x)
+    return lambda x: 1/root(2*np.pi) * quad(integrand, -np.inf, z_x)[0]
 
 

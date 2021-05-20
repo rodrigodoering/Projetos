@@ -129,15 +129,15 @@ def hyperplane_function(w, b=0, t=0):
 
 
 def z_score(mean, std):
-    return x: (x - mean) / std
+    return lambda x: (x - mean) / std
 
 # FUNÇÃO: Normal_pdf
 def normal_prob_density(mean, std):
     return lambda x: 1 / (std * root(2*pi)) * e**(-square(x - mean) / (2 * square(std)))     
 
 def normal_cumulative_density(mean, std):
-    z = z_score(mean, std)
-    integrand = lambda x: e**(-square(z_score(x))/2)
+    z_x = z_score(mean, std)(x)
+    integrand = lambda x: e**(-square(x)/2)
     return lambda x: 1/root(2*np.pi) * quad(integrand, -np.inf, z_x)
 
 

@@ -177,17 +177,67 @@ def SVD_decomp(X, n_comps=2, normalize=True):
 
 
 
+# FUNÇÕES RELACIONADAS A DISTRIBUIÇÃO NORMAL
 
 def z_score(mean, std):
+    
+    """Implementa a equação do z-score e retorna um callable que recebe um valor de x. 
+    Assume-se X segue uma distribuição normal:
+    
+    X∼N(μ,σ²)
+    
+    O z-score é escrito conforme a fórmula abaixo:
+    
+    z_x = (x − μ) / σ
+    
+    Argumentos:
+    ----------
+    mean - média aritmética da distribuição normal
+    std - desvio padrão da distribuição normal
+    
+    Retorna:
+    --------
+    Callable
+    """
     return lambda x: (x - mean) / std
+
 
 # FUNÇÃO: Normal_pdf
 def normal_prob_density(mean, std):
-    return lambda x: 1 / (std * root(2*pi)) * e**(-square(x - mean) / (2 * square(std)))     
+    """Implementa a função de densidade probabilidade de uma distribuição normal
+    equivalente à stats.norm.pdf
+    Com base na equação abaixo:
+    
+    f(x)=(σ√2π)^−1 ⋅ e^(−(x−μ)/2σ)²
+
+    Argumentos:
+    ----------
+    mean - média aritmética da distribuição normal
+    std - desvio padrão da distribuição normal
+    
+    Retorna:
+    --------
+    Callable
+    """
+    return lambda x: 1 / (std * root(2*pi)) * e**(-square(z_score(mean, std)(x)) / 2) 
+
 
 def normal_cumulative_density(mean, std):
-    z_x = z_score(mean, std)(x)
-    integrand = lambda x: e**(-square(x)/2)
-    return lambda x: 1/root(2*np.pi) * quad(integrand, -np.inf, z_x)[0]
+    """Implementa a função de densidade cumulativa
+    equivalente à stats.norm.cdf
+
+    Φ_μ,σ2(x)= 1√2π ∫ e(−(x−μ)2σ)² dx
+
+    Argumentos:
+    ----------
+    mean - média aritmética da distribuição normal
+    std - desvio padrão da distribuição normal
+    
+    Retorna:
+    --------
+    Callable
+    """
+    pdf = normal_prob_density(mean, std) 
+    return lambda x: integrate.quad(pdf, -np.inf, x)[0]
 
 

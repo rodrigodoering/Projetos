@@ -35,21 +35,34 @@ class Plot(GraphBase):
 
 
     def Annotate(
+      
             self, 
             coords: NumericArray, 
             annotations: Iterable[str], 
             offset: float = 0.1, 
             ax_offset: int = 0, 
             **kwargs
+      
         ) -> NoReturn:
+        """Função para exibir anotações no gráfico utilizando como base o método _subplots.Axes.text
+        Trabalha especialmente com strings
         
+        Argumentos:
+        -----------
+        coords - Coordenadas (x,y,z) para as anotar, um vetor por anotação
+        annotations - iterable contendo as anotações como strings
+        offset - desloca a anotação com base em um eixo de referência
+        ax_offset - eixo de referência
+        **kwargs - devem ser passados para  Axes.plot()
+        
+        """
         coords = GraphBase.numpy_convert(coords)
         
         # Se um axis inexistente for passado, zera o offset
         if ax_offset > self.axObj.n_axis:
             print('AxesInstance: ax_offset não existe no plot, desconsiderando offset')
             offset = 0
-        
+        # deve ser passada uma coordenada para cada anotação
         for vec, _str_ in zip(coords, annotations):
             coord_vals = (vec[i] + offset * int(i == ax_offset) for i in range(self.axObj.n_axis))
             self.axObj.ax_text(*coord_vals, text=_str_, **kwargs)  
@@ -57,17 +70,27 @@ class Plot(GraphBase):
     
     
     def Function(
+      
             self, 
             function: Callable, 
             X: Union[NumericArray, tuple] = None,
             n_samples: int = 10,
             plot_intercept: bool = False,
-            specs: dict = None,
-            label: str = None,
-            
+            label: str = None,            
             **kwargs
+      
         ) -> NoReturn:
+        """Desenha funções em 2D e 3D com base no método _subplots.Axes.plot
         
+        Argumentos:
+        -----------
+        function - um callable que retorne um array de valores numéricos para servir de dimensão Y em 2D ou Z em 3D
+        X - domínio da função, valores para passar como input. X = [x] para plots 2D ou X = [x,y] para plots 3D
+        plot_intercept - Se verdadeiro, exibe o ponto [0, function(0)] em 2D ou [0, 0, function(0,0)] em 3D
+        label - nome da função, suporta linguagem LaTex
+        **kwargs - devem ser passados para  _subplots.Axes.plot()
+        
+        """
         n_features = self.axObj.n_axis - 1
         
         if X is None:
@@ -89,14 +112,14 @@ class Plot(GraphBase):
         # Aplica a função e computa Y
         Y = function(X)
         
+        # Exibe  o plot
         if label is not None:
-            #self.axObj.ax_plot(*X.T, Y, label=label, **kwargs)
             self.axObj.ax_plot(*self.iter_params(X, Y), label=label, **kwargs)
             self.enable_legend()
         else:
-            #self.axObj.ax_plot(*X.T, Y, **kwargs)
             self.axObj.ax_plot(*self.iter_params(X, Y), **kwargs)
         
+        # Plota o intercept da função
         if plot_intercept:
             zero_vec = np.zeros(n_features)
             intercept = function(zero_vec)

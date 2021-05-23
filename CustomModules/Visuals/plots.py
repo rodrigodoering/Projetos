@@ -20,7 +20,6 @@ from Visuals._base_._graph_base import GraphBase
   
 
 class Plot(GraphBase):
-  
     
     """ Representa o gráfico, herda de graph_base """
        
@@ -28,24 +27,13 @@ class Plot(GraphBase):
     def __init__(self, current_Axes: _subplots.Axes=None, **kwargs) -> NoReturn:
         # Inicia os parâmetros 
         if current_Axes is not None:
-            self.new_axes_obj(
+            self.new_plot(
                 n_axis=None, 
                 current_Axes = current_Axes, 
                 **kwargs
             )
-        
-            
-    def new_plot(self, n_axis: int = None, specs: dict = None, **kwargs):
-        self.new_axes_obj(n_axis, **kwargs)
-        
-        # Por agora, definir os specs do plot envolve enviar um dicionário com keys e valores
-        # O dicionário é processado e enviado para a função que aplica os parâmetros
-        # Eventualmente essa função será redesenhada com um argumento por parâmetro do plot e não será mais necessário passar os specs como um dicionário
-        if specs is not None:
-            plot_specs = GraphBase.build_spec_kwargs(specs)
-            self.set_plot_specs(**plot_specs)
-            
-    
+
+
     def Annotate(
             self, 
             coords: NumericArray, 
@@ -57,15 +45,15 @@ class Plot(GraphBase):
         
         coords = GraphBase.numpy_convert(coords)
         
-        # Se um axis inexistente for passado, zera o offset, por exemplo ax_offset = 2 em um plot 2D (axis 0 e 1 apenas)
+        # Se um axis inexistente for passado, zera o offset
         if ax_offset > self.axObj.n_axis:
-            # Optei aqui por não gerar um erro, apenas exibir uma mensagem no Stdout e desconsiderar o offset
             print('AxesInstance: ax_offset não existe no plot, desconsiderando offset')
             offset = 0
         
         for vec, _str_ in zip(coords, annotations):
             coord_vals = (vec[i] + offset * int(i == ax_offset) for i in range(self.axObj.n_axis))
             self.axObj.ax_text(*coord_vals, text=_str_, **kwargs)  
+    
     
     
     def Function(

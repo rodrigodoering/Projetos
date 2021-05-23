@@ -11,9 +11,6 @@ import numpy as np
 import seaborn as sb
 import functools
 
-import sys
-sys.path.append('C:\\Users\\rodri\\Desktop\\Relacionados a Código\\github_Rodrigo\\Notebooks\\DataViz_Obj')
-
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
@@ -32,19 +29,6 @@ class GraphBase:
             array = np.array(array)
         return array
 
-    '''
-    @staticmethod
-    def build_spec_kwargs(args: dict = None) -> dict:
-        specs_keys = ['labels', 'fontsize', 'lims', 'elev', 'azim', 'title', 'grid']
-        specs = {key:None for key in specs_keys}
-        specs['grid'] = False
-        
-        if args is not None:
-            for key in args.keys():
-                specs[key] = args[key]
-        return specs
-    '''
-    
     @staticmethod
     def flat_grid(grid):
         flatten = [coords.ravel() for coords in grid]
@@ -93,40 +77,12 @@ class GraphBase:
         
         if grid:
             self.axObj.ax.grid()            
-            
-            
-            
+                    
             
     
     def enable_legend(self) -> NoReturn:
         self.axObj.ax.legend()
         
-        
-    '''
-    def set_plot_specs(
-            self,
-            labels: Iterable[str] = None, 
-            fontsize: int = None, 
-            lims: Tuples = None, 
-            elev: int = None, 
-            azim: int = None,
-            grid: bool = None,
-            title: str = None,
-        ) -> NoReturn:
-              
-        self.axObj.set_ax_labels(labels, fontsize)
-        self.axObj.set_ax_limits(lims)
-        
-        if self.axObj.n_axis == 3:
-            self.axObj.set_ax_view(elev, azim)
-        
-        if title is not None:
-            self.axObj.set_ax_title(title)
-        
-        if grid:
-            self.axObj.ax.grid()
-     '''  
-    
     
     def full_coordinates(self, X: NumericArray) -> bool:
         X_numpy = GraphBase.numpy_convert(X)

@@ -35,7 +35,6 @@ class Plot(GraphBase):
 
 
     def Annotate(
-      
             self, 
             coords: NumericArray, 
             annotations: Iterable[str], 
@@ -70,7 +69,6 @@ class Plot(GraphBase):
     
     
     def Function(
-      
             self, 
             function: Callable, 
             X: Union[NumericArray, tuple] = None,

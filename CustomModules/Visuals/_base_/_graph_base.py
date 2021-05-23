@@ -109,12 +109,7 @@ class GraphBase:
                 
     
     
-    def iter_params(
-            self,
-            X: NumericArray, 
-            Y: NumericArray = None, 
-            Z: NumericArray = None,
-        ) -> Iterator[NumericArray]:
+    def iter_params(self,X: NumericArray, Y: NumericArray = None, Z: NumericArray = None) -> Iterator[NumericArray]:
         
         is_none = (_input_ is None for _input_ in [Y,Z])
         

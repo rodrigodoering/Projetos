@@ -11,6 +11,8 @@ import numpy as np
 import seaborn as sb
 import functools
 
+import sys
+sys.path.append('C:\\Users\\rodri\\Desktop\\Relacionados a Código\\github_Rodrigo\\Notebooks\\DataViz_Obj')
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
@@ -30,7 +32,7 @@ class GraphBase:
             array = np.array(array)
         return array
 
-
+    '''
     @staticmethod
     def build_spec_kwargs(args: dict = None) -> dict:
         specs_keys = ['labels', 'fontsize', 'lims', 'elev', 'azim', 'title', 'grid']
@@ -41,7 +43,7 @@ class GraphBase:
             for key in args.keys():
                 specs[key] = args[key]
         return specs
-    
+    '''
     
     @staticmethod
     def flat_grid(grid):
@@ -52,22 +54,55 @@ class GraphBase:
     """ Plot assist Methods """
     
 
-    def new_axes_obj(self, n_axis: int = None, current_Axes: _subplots.Axes=None, **kwargs) -> NoReturn:
+    def new_plot(
+            self, 
+            n_axis: int = None, 
+            current_Axes: _subplots.Axes=None,
+            labels: Iterable[str] = None, 
+            fontsize: int = None, 
+            lims: Tuples = None, 
+            elev: int = None, 
+            azim: int = None,
+            grid: bool = False,
+            title: str = None,
+            **kwargs
+        ) -> NoReturn:
+        
         if current_Axes is not None:
             if not isinstance(current_Axes, _subplots.Axes):
-                raise Error('InvalidAxesObject')
+                raise Error('InvalidAxesObject')    
             self.axObj = current_Axes
+            
         elif n_axis is None:
             # se não for passado, o padrão é um plot 2D
             self.axObj = AxesInstance(n_axis=2, **kwargs)
         else:
-            self.axObj = AxesInstance(n_axis, **kwargs)    
-     
+            self.axObj = AxesInstance(n_axis, **kwargs)
+        
+        if labels is not None:
+            self.axObj.set_ax_labels(labels, fontsize)
+            
+        if lims is not None:
+            self.axObj.set_ax_limits(lims)
+        
+        if self.axObj.n_axis == 3:
+            self.axObj.set_ax_view(elev, azim)
+        
+        if title is not None:
+            self.axObj.set_ax_title(title)
+        
+        if grid:
+            self.axObj.ax.grid()            
+            
+            
+            
+            
     
     def enable_legend(self) -> NoReturn:
         self.axObj.ax.legend()
         
-
+        
+    '''
     def set_plot_specs(
             self,
             labels: Iterable[str] = None, 
@@ -90,7 +125,7 @@ class GraphBase:
         
         if grid:
             self.axObj.ax.grid()
-        
+     '''  
     
     
     def full_coordinates(self, X: NumericArray) -> bool:

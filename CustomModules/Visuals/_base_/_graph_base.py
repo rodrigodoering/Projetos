@@ -21,8 +21,21 @@ from Visuals._utils_._type_definitions import *
 
 class GraphBase:
            
-    """ Class Static Methods """
+    """
+    Superclasse de Visuals.plots.Plot
+    Essa classe 
     
+    Class Static Methods:
+    Métodos uteis que podem ser usados dentro ou fora da instância, que tem como objetivo principal
+    controlar e transformar objetos numpy de acordo com a necessidade do plot. São usadas tanto na superclasse quanto na subclasse
+    
+    Class Methods:
+    Funcionamento base dos plots, funções que necessitam de informações do plot e que são necessárias em todos os tipos de plots implementados
+    Funções gerar uma nova instância de AxesInstance quando solicitado pela subclasse, para interar e enviar parâmetros para AxesInstance conforme o
+    necessário, etc
+    
+    """
+   
     @staticmethod 
     def to_numpy(array: NumericArray) -> np.ndarray:
         if not isinstance(array, np.ndarray):
@@ -66,7 +79,7 @@ class GraphBase:
         return ndarray
     
     
-    """ Plot assist Methods """
+    """ Class Methods starts here"""
     
 
     def new_plot(
@@ -114,58 +127,6 @@ class GraphBase:
     def enable_legend(self) -> NoReturn:
         self.axObj.ax.legend()
         
-
-    def full_coordinates(self, X: NumpyArray) -> bool:
-        # Se X é unidimensional, então não pode conter coordenadas de multiplos eixos
-        if X.ndim == 1:
-            return False
-        
-        # Se as condições acimas não foram satisfeitas, as dimensões de X serão testadas
-        elif X.ndim == 2:
-            # Assume-se também que X está orientado como samples x features
-            n_samples, n_features = X.shape
-            
-            if n_features == self.axObj.n_axis:
-                return True
-            
-            else:
-               return False 
-            
-        # Para tensores (ndim > 2), mantem-se os inputs como foram passados
-        # Possivelmente, essa lógica poderá ser revista mais a frente para suportar tensores
-        else:
-            return False
-                
-    
-    '''
-    
-    def iter_params(
-            self,
-            X: NumericArray, 
-            Y: NumericArray = None, 
-            Z: NumericArray = None,
-        ) -> Iterator[NumericArray]:
-        
-        is_none = (_input_ is None for _input_ in [Y,Z])
-        
-        if self.full_coordinates(X) and all(is_none):
-            print('Full coords')
-            for coord in X.T:
-                yield coord
-        
-        elif self.axObj.n_axis == 2:
-            for coord in (X, Y):
-                yield coord
-                
-        elif self.axObj.n_axis == 3 and Z is None:
-            raise Error('MissingZ')
-            
-        else:
-            for coord in (X, Y, Z):
-                yield coord
-
-    '''
-    
     
     def iter_params(
             self,

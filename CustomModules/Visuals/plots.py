@@ -43,7 +43,10 @@ class Plot(GraphBase):
             ax_offset: int = 0, 
             **kwargs
         ) -> NoReturn:
-        """Função para exibir anotações no gráfico utilizando como base o método _subplots.Axes.text
+        """
+        Descrição:
+        ----------
+        Função para exibir anotações no gráfico utilizando como base o método _subplots.Axes.text
         Trabalha especialmente com strings
         
         Argumentos:
@@ -82,7 +85,10 @@ class Plot(GraphBase):
             
             **kwargs
         ) -> NoReturn:
-        """Desenha funções em 2D e 3D com base no método _subplots.Axes.plot
+        """
+        Descrição:
+        ----------
+        Desenha funções em 2D e 3D com base no método _subplots.Axes.plot
         
         Argumentos:
         -----------

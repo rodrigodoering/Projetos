@@ -11,9 +11,6 @@ import numpy as np
 import seaborn as sb
 import functools
 
-import sys
-sys.path.append('C:\\Users\\rodri\\Desktop\\Relacionados a Código\\github_Rodrigo\\Notebooks\\DataViz_Obj')
-
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
@@ -67,12 +64,6 @@ class GraphBase:
                 ndarray = np.array(flatten).T
             
         return ndarray
-
-
-    @staticmethod
-    def flat_grid(grid):
-        flatten = [coords.ravel() for coords in grid]
-        return np.array(flatten).T
     
     
     """ Plot assist Methods """

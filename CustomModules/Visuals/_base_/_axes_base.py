@@ -50,7 +50,7 @@ class AxesInstance:
             raise Error('NumberAxis')
      
         
-    def get_ax_method(self, method_list: list) -> Generator[Callable, str, NoReturn]:
+    def get_ax_method(self, method_list: list) -> Generator[Callable, None, NoReturn]:
         """ Retorna funções de label """
         for func in method_list[:self.n_axis]:
             yield getattr(self.ax, func)
@@ -59,9 +59,10 @@ class AxesInstance:
     def assert_sequence(self, _input_: Sequence, required: int = None) -> Sequence:
         if required is None:
             required = self.n_axis
+        #print(_input_)
         size_input = len(_input_)
-        assert_msg = 'Valores na Sequência: %d ; Exigido pela função %s: %d' 
-        assert size_input == required, assert_msg % (size_input, self.last_function_call, required)
+        assert_msg = 'Valores na Sequência: %d ; Exigido pela função: %d' 
+        assert size_input == required, assert_msg % (size_input, required)
 
 
     
@@ -135,6 +136,9 @@ class AxesInstance:
                 else:
                     raise Exception('Something weird happened')
                 
+                #print('CONTROL_PLOT_PARAMS')
+                #print(args)
+                
                 self.last_function_call = func.__name__
                 # DEBUG
                 print('Call:', self.last_function_call)
@@ -142,11 +146,7 @@ class AxesInstance:
                 print('required', required_vals, '\n')
                 
                 self.assert_sequence(args, required_vals)
-                '''
-                #self.validate_sequence(len(args), required_vals)
-                if len(args) != required_vals:
-                    raise Error('AxisCoordinates')
-                '''
+
                 # retorna função do objeto ax
                 return func(self, *args, **kwargs) 
             # retorna o decorador

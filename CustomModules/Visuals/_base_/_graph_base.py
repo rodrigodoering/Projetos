@@ -11,6 +11,9 @@ import numpy as np
 import seaborn as sb
 import functools
 
+import sys
+sys.path.append('C:\\Users\\rodri\\Desktop\\Relacionados a Código\\github_Rodrigo\\Notebooks\\DataViz_Obj')
+
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
 
@@ -23,11 +26,48 @@ class GraphBase:
            
     """ Class Static Methods """
     
-    @staticmethod
-    def numpy_convert(array: NumericArray) -> np.ndarray:
-        if isinstance(array, list):
-            array = np.array(array)
+    @staticmethod 
+    def to_numpy(array: NumericArray) -> np.ndarray:
+        if not isinstance(array, np.ndarray):
+            # Testo o tipo da variável usando type() para tipos nativos do python por ser bastante legível
+            # Se for explicitamente uma lista nativa do python...
+            if type(array) is list:
+                array = np.array(array)
+            # Porém, para testar possíveis instâncias, sempre utilizar isinstance()
+            elif isinstance(array, pd.DataFrame):
+                array = array.values
+
+            # Conforme bugs forem surgindo, atualizarei esse bloco de código
+            # Para suportar novos tipos
+            else:
+                raise ValueError('Tipo de input não reconhecido')
         return array
+    
+    
+    @staticmethod
+    def numpy_convert(
+            array: NumericArray,
+            check: bool = True,
+            squeeze: bool = False, 
+            expand: bool = False,
+            flat: bool = False
+        ) -> np.ndarray:
+        
+        if check:
+            ndarray = GraphBase.to_numpy(array)
+        
+        if squeeze and ndarray.ndim >= 2:
+            ndarray = np.squeeze(ndarray)
+            
+        if expand and ndarray.ndim == 1:
+            ndarray = np.expand_dims(ndarray, axis=0)
+        
+        if flat and ndarray.ndim >= 2:
+                flatten = [feature.ravel() for feature in ndarray]
+                ndarray = np.array(flatten).T
+            
+        return ndarray
+
 
     @staticmethod
     def flat_grid(grid):
@@ -77,18 +117,16 @@ class GraphBase:
         
         if grid:
             self.axObj.ax.grid()            
-                    
             
+        
     
     def enable_legend(self) -> NoReturn:
         self.axObj.ax.legend()
         
-    
-    def full_coordinates(self, X: NumericArray) -> bool:
-        X_numpy = GraphBase.numpy_convert(X)
-        
+
+    def full_coordinates(self, X: NumpyArray) -> bool:
         # Se X é unidimensional, então não pode conter coordenadas de multiplos eixos
-        if X_numpy.ndim == 1:
+        if X.ndim == 1:
             return False
         
         # Se as condições acimas não foram satisfeitas, as dimensões de X serão testadas
@@ -108,8 +146,14 @@ class GraphBase:
             return False
                 
     
+    '''
     
-    def iter_params(self,X: NumericArray, Y: NumericArray = None, Z: NumericArray = None) -> Iterator[NumericArray]:
+    def iter_params(
+            self,
+            X: NumericArray, 
+            Y: NumericArray = None, 
+            Z: NumericArray = None,
+        ) -> Iterator[NumericArray]:
         
         is_none = (_input_ is None for _input_ in [Y,Z])
         
@@ -129,5 +173,51 @@ class GraphBase:
             for coord in (X, Y, Z):
                 yield coord
 
-
+    '''
+    
+    
+    def iter_params(
+            self,
+            X: NumericArray, 
+            Y: NumericArray = None, 
+            Z: NumericArray = None,
+        ) -> Iterator[NumericArray]:
+        
+        # Se Y e Z não foram passados, avalia X
+        if all(_input_ is None for _input_ in [Y,Z]):
+            print('ALL NONE')
+            
+            X = GraphBase.to_numpy(X)
+            
+            if X.ndim == 1:
+                X = GraphBase.numpy_convert(X, expand=True)
+            
+            n_samples, n_features = X.shape
+                
+            if n_features == self.axObj.n_axis:
+                print('Full coords')
+                for coord in X.T:
+                    yield coord
+            
+            else:
+                raise ValueError('Input Não reconhecido')    
+                    
+        elif self.axObj.n_axis == 2:
+            for coord in (X, Y):
+                yield coord
+                
+        elif self.axObj.n_axis == 3 and Z is None:
+            raise Error('MissingZ')
+            
+        else:
+            for coord in (X, Y, Z):
+                yield coord                    
+                    
+        
+        
+        
+        
+        
+        
+        
 

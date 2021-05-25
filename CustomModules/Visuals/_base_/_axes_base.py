@@ -116,7 +116,7 @@ class AxesInstance:
                     
             
     
-    def control_plot_params(input_type: str) -> Callable: 
+    def check_params(input_type: str) -> Callable: 
         # Função permite aplicar argumentos no decorador
         def decorator(func): 
             # função decoradora
@@ -136,15 +136,8 @@ class AxesInstance:
                 else:
                     raise Exception('Something weird happened')
                 
-                #print('CONTROL_PLOT_PARAMS')
-                #print(args)
-                
-                self.last_function_call = func.__name__
-                # DEBUG
-                print('Call:', self.last_function_call)
-                print('Len Args', len(args))
-                print('required', required_vals, '\n')
-                
+
+                self.last_function_call = func.__name__                
                 self.assert_sequence(args, required_vals)
 
                 # retorna função do objeto ax
@@ -154,32 +147,32 @@ class AxesInstance:
         return decorator
           
     
-    @control_plot_params(input_type='coordinates')
+    @check_params(input_type='coordinates')
     def ax_text(self, *coords: NumericArray, text: str, **kwargs) -> NoReturn:
         self.ax.text(*coords, s=text, **kwargs)
     
     
-    @control_plot_params(input_type='coordinates')
+    @check_params(input_type='coordinates')
     def ax_plot(self, *coords: NumericArray,**kwargs) -> NoReturn:
         self.ax.plot(*coords, **kwargs)
 
 
-    @control_plot_params(input_type='coordinates')
+    @check_params(input_type='coordinates')
     def ax_scatter(self, *coords: NumericArray, **kwargs) -> NoReturn:
         self.ax.scatter(*coords, **kwargs)  
         
         
-    @control_plot_params(input_type='vector')
+    @check_params(input_type='vector')
     def ax_quiver(self, *coords: NumericArray, origin: tuple = None, **kwargs) -> NoReturn:      
         tail_coords = tuple(0 for i in range(self.n_axis)) if origin is None else origin
         self.ax.quiver(*tail_coords, *coords, **kwargs)
  
 
-    @control_plot_params(input_type='grid')
+    @check_params(input_type='grid')
     def ax_contourf(self, *coords: NumericArray, levels: int = None, **kwargs) -> NoReturn:
         self.ax.contourf(*coords, levels=levels, **kwargs)
 
 
-    @control_plot_params(input_type='grid')
+    @check_params(input_type='grid')
     def ax_surface(self, *coords, **kwargs) -> NoReturn:
         self.ax.plot_surface(*coords, **kwargs)

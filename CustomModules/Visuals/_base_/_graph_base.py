@@ -56,7 +56,7 @@ class GraphBase:
     
     @staticmethod
     def numpy_convert(
-            array: NumericArray,
+            ndarray: NumericArray,
             check: bool = True,
             squeeze: bool = False, 
             expand: bool = False,

@@ -132,8 +132,6 @@ class GraphBase:
         
         # Se Y e Z não foram passados, avalia X
         if all(_input_ is None for _input_ in [Y,Z]):
-            print('ALL NONE')
-            
             X = GraphBase.to_numpy(X)
             
             if X.ndim == 1:

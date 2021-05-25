@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sb
 import functools
+from collections.abc import Iterable
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import _subplots
@@ -41,7 +42,6 @@ class Plot(GraphBase):
             offset: float = 0.1, 
             ax_offset: int = 0, 
             **kwargs
-      
         ) -> NoReturn:
         """Função para exibir anotações no gráfico utilizando como base o método _subplots.Axes.text
         Trabalha especialmente com strings
@@ -54,8 +54,11 @@ class Plot(GraphBase):
         ax_offset - eixo de referência
         **kwargs - devem ser passados para  Axes.plot()
         
-        """
-        coords = GraphBase.numpy_convert(coords)
+        """        
+        coords = GraphBase.to_numpy(coords)
+        
+        if type(annotations) is str:
+            annotations = [annotations]
         
         # Se um axis inexistente for passado, zera o offset
         if ax_offset > self.axObj.n_axis:
@@ -74,9 +77,10 @@ class Plot(GraphBase):
             X: Union[NumericArray, tuple] = None,
             n_samples: int = 10,
             plot_intercept: bool = False,
-            label: str = None,            
+            specs: dict = None,
+            label: str = None,
+            
             **kwargs
-      
         ) -> NoReturn:
         """Desenha funções em 2D e 3D com base no método _subplots.Axes.plot
         
@@ -88,7 +92,7 @@ class Plot(GraphBase):
         label - nome da função, suporta linguagem LaTex
         **kwargs - devem ser passados para  _subplots.Axes.plot()
         
-        """
+        """        
         n_features = self.axObj.n_axis - 1
         
         if X is None:
@@ -110,14 +114,14 @@ class Plot(GraphBase):
         # Aplica a função e computa Y
         Y = function(X)
         
-        # Exibe  o plot
         if label is not None:
+            #self.axObj.ax_plot(*X.T, Y, label=label, **kwargs)
             self.axObj.ax_plot(*self.iter_params(X, Y), label=label, **kwargs)
             self.enable_legend()
         else:
+            #self.axObj.ax_plot(*X.T, Y, **kwargs)
             self.axObj.ax_plot(*self.iter_params(X, Y), **kwargs)
         
-        # Plota o intercept da função
         if plot_intercept:
             zero_vec = np.zeros(n_features)
             intercept = function(zero_vec)
@@ -171,10 +175,16 @@ class Plot(GraphBase):
             
             if callable(function):
                 base_variable = np.linspace(min_val, max_val, n_samples)
-                grid = np.broadcast_arrays(base_variable[np.newaxis,:], base_variable[:,np.newaxis])
                 
-                Z = GraphBase.numpy_convert(
-                    function(GraphBase.flat_grid(grid))
+                grid = np.broadcast_arrays(
+                    base_variable[np.newaxis,:], 
+                    base_variable[:,np.newaxis]
+                )
+                
+                Z = GraphBase.to_numpy(
+                    function(
+                        GraphBase.numpy_convert(grid, flat=True)
+                    )
                 )
                 
                 grid.append(Z.reshape(n_samples, n_samples))                
@@ -196,36 +206,54 @@ class Plot(GraphBase):
             Y: NumericArray = None, 
             Z: NumericArray = None,
             origin: tuple = None,
-            colors: Iterable[str] = None,
+            color: Strings = None,
             annot: Iterable[str] = None,
             offset: float = 0.1,
             ax_offset: int = 0,
             fontsize: int = 12,
-            color: str = 'black',
+            annot_color: str = 'black',
             **kwargs
         
         ) -> NoReturn:
         
+        #print('VECTORS FUNC')
         vecs = np.array([*self.iter_params(X,Y,Z)]).T
+        #print(vecs)
+        #print('Len vecs', len(vecs))
         n_vecs = vecs.shape[0]
+        print('\n')
         
-        if any(param is not None for param in [colors, annot]):
-            for param in [colors, annot]:
-                if param is not None:
-                    self.validate_sequence(param, n_vecs)
-        
+        # Parâmetros interáveis precisam ser checados        
         if origin is not None:
             # ponto de origem deve ter a mesma dimensionalidade do plot
             # i.e mesmo número de componentes
             self.axObj.assert_sequence(origin, None)
         
-        vec_scale = {'angles':'xy', 'scale_units':'xy', 'scale':1}
-        colors = ['black' for i in range(n_vecs)] if colors is None else colors
+        #vec_scale = {'angles':'xy', 'scale_units':'xy', 'scale':1}       
         
-        for vec, color in zip(vecs, colors):
-            self.axObj.ax_quiver(*vec, origin=origin, color=color, **vec_scale)
+        if color is not None:
+            if isinstance(color, str):
+                color = [color for i in range(n_vecs)]
+        else:
+            color = ['black' for i in range(n_vecs)]
             
+                        
+        for vec, c in zip(vecs, color):
+            print(vec, c)
+            self.axObj.ax_quiver(
+                *vec, 
+                origin=origin, 
+                color=c, 
+                angles='xy',
+                scale_units='xy',
+                scale=1,
+                **kwargs
+            )
+
         if annot is not None:
+            if type(annot) is str:
+                annot = [annot]
+                self.axObj.assert_sequence(annot, n_vecs)
 
             self.Annotate(
                 coords = vecs, 
@@ -233,19 +261,11 @@ class Plot(GraphBase):
                 offset = offset, 
                 ax_offset = ax_offset, 
                 fontsize = fontsize,
-                color = color
+                color = annot_color
             )
             
-        
 
-        
-            
-            
-            
-            
-            
-            
-            
+   
             
             
             

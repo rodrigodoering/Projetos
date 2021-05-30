@@ -222,7 +222,7 @@ def normal_prob_density(mean, std):
     return lambda x: 1 / (std * root(2*pi)) * e**(-square(z_score(mean, std)(x)) / 2) 
 
 
-def normal_cumulative_density(mean, std):
+def cumulative_density_function(mean, std):
     """Implementa a função de densidade cumulativa
     equivalente à stats.norm.cdf
 
@@ -239,5 +239,23 @@ def normal_cumulative_density(mean, std):
     """
     pdf = normal_prob_density(mean, std) 
     return lambda x: integrate.quad(pdf, -np.inf, x)[0]
+
+
+def normal_cumulative_density_erf(mean, std):
+    """Implementa a função de densidade cumulativa
+    equivalente à stats.norm.cdf
+
+    Φ_μ,σ2(x)= 1/2 * [ 1 + erf((x−μ)σ√2)]
+
+    Argumentos:
+    ----------
+    mean - média aritmética da distribuição normal
+    std - desvio padrão da distribuição normal
+    
+    Retorna:
+    --------
+    Callable
+    """
+    return lambda x: 1/2 * (1 + erf( (x - mean) / (std * root(2)) ))
 
 
